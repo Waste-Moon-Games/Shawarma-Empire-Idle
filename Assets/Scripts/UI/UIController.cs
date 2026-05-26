@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class UIController : MonoBehaviour
 {
@@ -32,6 +33,8 @@ public class UIController : MonoBehaviour
 
     private void BuildCanvas()
     {
+        EnsureEventSystem();
+
         var canvasGo = new GameObject("Canvas", typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
         var canvas = canvasGo.GetComponent<Canvas>();
         canvas.renderMode = RenderMode.ScreenSpaceOverlay;
@@ -46,6 +49,15 @@ public class UIController : MonoBehaviour
         CreateUpgradeRow(canvasGo.transform, "Income", new Vector2(20f, -270f), upgrades.BuyIncome);
         CreateUpgradeRow(canvasGo.transform, "Auto", new Vector2(20f, -320f), upgrades.BuyAuto);
         CreateUpgradeRow(canvasGo.transform, "Spawn", new Vector2(20f, -370f), upgrades.BuySpawn);
+    }
+
+
+    private static void EnsureEventSystem()
+    {
+        if (Object.FindObjectOfType<EventSystem>() != null) return;
+
+        var eventSystem = new GameObject("EventSystem", typeof(EventSystem), typeof(StandaloneInputModule));
+        eventSystem.transform.SetAsLastSibling();
     }
 
     private void CreateUpgradeRow(Transform parent, string title, Vector2 position, Func<bool> buyAction)
